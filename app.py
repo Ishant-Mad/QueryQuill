@@ -66,3 +66,42 @@ st.markdown("""
     }
 </style>
 """, unsafe_allow_html=True)
+
+def process_run(st, thread_id, assistant_id):
+    st.session_state.last_message = None
+    response = runAssistant(thread_id, assistant_id)
+    thread_messages = response["response"]
+
+    for message in thread_messages:
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        if message['role'] == 'user':
+            with st.container():
+                st.markdown(
+                    f"""
+                    <div class="chat-container">
+                        <div class="chat-header">
+                            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Grinning%20Cat%20with%20Smiling%20Eyes.png" alt="User">
+                            <span>You</span>
+                        </div>
+                        <div class="chat-message user">
+                            {message['content']}
+                        </div>
+                        <div class="chat-timestamp">{timestamp}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+        else:
+            with st.container():
+                st.markdown(
+                    f"""
+                    <div class="chat-container">
+                        <div class="chat-header">
+                            <img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Robot.png" alt="Assistant">
+                            <span>Assistant</span>
+                        </div>
+                        <div class="chat-message assistant">
+                            {message['content']}
+                        </div>
+                        <div class="chat-timestamp">{timestamp}</div>
+                    </div>
+                    """, unsafe_allow_html=True)
+                
