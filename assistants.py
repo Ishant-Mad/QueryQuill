@@ -36,3 +36,38 @@ def scrape_website(url):
         return html_content
     else:
         return f"<p>Failed to retrieve content from {url}. Status code: {response.status_code}</p>"
+    
+def get_news(topic):
+    """Get news information based on a given topic."""
+    url = (
+        f"https://newsapi.org/v2/everything?q={topic}&apikey={news_api_key}&pageSize=5"
+    )
+    try:
+        response = requests.get(url)
+        
+        news = json.dumps(response.json(), indent=3)
+        news_json = json.loads(news) 
+        data = news_json
+        
+        articles = data["articles"]
+        final_news = []
+        
+        for article in articles:
+            source_name = article["source"]["name"]
+            author = article["author"]
+            title = article["title"]
+            description = article["description"]
+            url = article["url"]
+            
+            title_description = f""" 
+                Title: {title},
+                Author: {author},
+                Source: {source_name},
+                Description: {description},
+                URL: {url}
+            """
+            final_news.append(title_description)
+        return final_news
+            
+    except Exception as e:
+        print("Something went wrong:", e)
